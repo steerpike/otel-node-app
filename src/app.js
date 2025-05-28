@@ -10,10 +10,7 @@ app.get('/api', async (req, res) => {
     const span = trace.getActiveSpan();
     if (span) {
         span.setAttribute('user_id', userId);
-    } else {
-        console.warn('No active span found, telemetry data may be incomplete for user_id:', userId);
     }
-
     if (userId === 10) {
         // Wait 4-6 seconds, then return success
         const delay = Math.floor(Math.random() * (6000 - 4000 + 1)) + 4000;
