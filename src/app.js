@@ -1,9 +1,12 @@
 const express = require('express');
+const { trace, SpanStatusCode } = require('@opentelemetry/api'); // Import OpenTelemetry API
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.get('/api', async (req, res) => {
+    const span = trace.getActiveSpan();
     try {
         // Simulate a periodic chance of throwing an unhandled error
         if (Math.random() < 0.1) {
@@ -21,10 +24,27 @@ app.get('/api', async (req, res) => {
                 { status: 503, message: 'Downstream Phoenix failure' },
             ];
             const randomError = errorTypes[Math.floor(Math.random() * errorTypes.length)];
+            if (span) {
+                span.addEvent('error', {
+                    'event.name': 'business.logic.error',
+                    'error.message': randomError.message,
+                    'error.status_code': randomError.status,
+                });
+                span.setAttribute('http.status_code', randomError.status);
+                span.setAttribute('error.type', randomError.message);
+
+                span.setStatus({ code: SpanStatusCode.ERROR, message: randomError.message });
+            }
             res.status(randomError.status).send(randomError.message);
         }
     } catch (err) {
-        // Log the error and send a 500 response
+        if (span) {
+            span.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+            span.setAttribute('http.status_code', 500);
+            span.setAttribute('error.type', err.message || 'Error');
+
+            span.recordException(err);
+        }
         res.status(500).send(err.message);
     }
 });
