@@ -25,7 +25,7 @@ app.get('/api', async (req, res) => {
         }
     } catch (err) {
         // Log the error and send a 500 response
-        res.status(500).send('Unexpected server error');
+        res.status(500).send(err.message);
     }
 });
 
