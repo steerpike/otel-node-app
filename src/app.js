@@ -24,7 +24,6 @@ app.get('/api', async (req, res) => {
             res.status(randomError.status).send(randomError.message);
         }
     } catch (err) {
-        // Log the error and send a 500 response
         res.status(500).send(err.message);
     }
 });
