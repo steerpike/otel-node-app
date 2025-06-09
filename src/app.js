@@ -39,6 +39,7 @@ app.get('/api', async (req, res) => {
         }
     } catch (err) {
         if (span) {
+            //{resource.service.name="error-testing-app" && .http.status_code >= 500 && .error.type!=nil} | rate() by(.error.type)
             span.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
             span.setAttribute('http.status_code', 500);
             span.setAttribute('error.type', err.message || 'Error');
