@@ -9,9 +9,9 @@ app.get('/api', async (req, res) => {
     const span = trace.getActiveSpan();
     try {
         // Simulate a periodic chance of throwing an unhandled error
-        if (Math.random() < 0.1) {
+        /*if (Math.random() < 0.1) {
             throw new Error('Simulated critical error');
-        }
+        }*/
         const randomNum = Math.random();
         if (randomNum < 0.9) {
             res.status(200).send(`Success`);
@@ -23,7 +23,7 @@ app.get('/api', async (req, res) => {
                 { status: 504, message: 'User API processing timed out' },
                 { status: 503, message: 'Downstream Phoenix failure' },
             ];
-            const randomError = errorTypes[Math.floor(Math.random() * errorTypes.length)];
+            const randomError = errorTypes[0];
             if (span) {
                 span.addEvent('error', {
                     'event.name': 'business.logic.error',

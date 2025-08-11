@@ -16,7 +16,7 @@ const {
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({
     [ ATTR_SERVICE_NAME ]: "error-testing-app",
-    [ ATTR_SERVICE_VERSION ]: "1.0",
+    [ ATTR_SERVICE_VERSION ]: "2.0",
   }),
   traceExporter: new OTLPTraceExporter({
     url: 'https://local.dev.obs.ninetech.dev/v1/traces',
